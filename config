@@ -1,0 +1,46 @@
+# Code repository
+Host gitlab-kai-sportcontract
+    HostName gitlab.com
+    User gitlab-kai-sportcontract
+    IdentityFile ~/.ssh/kai_sp
+
+Host github-local
+    HostName github.com
+    User github-local
+    IdentityFile ~/.ssh/local
+
+Host git
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/local
+
+# Machine
+Host sportcontract-monitoring-node
+    HostName 62.138.3.163
+    IdentityFile ~/.ssh/kai_sp
+
+Host sportcontract-prod-node-a
+    HostName 146.0.227.81
+    IdentityFile ~/.ssh/kai_sp
+
+Host sportcontract-prod-node-b
+    HostName 37.61.218.45
+    IdentityFile ~/.ssh/kai_sp
+
+Host sportcontract-prod-node-c
+    HostName 37.61.215.1
+    IdentityFile ~/.ssh/kai_sp
+
+Host sportcontract-prod-node-d
+    HostName 37.61.208.161
+    IdentityFile ~/.ssh/kai_sp
+
+Host sportcontract-test-worker1
+    HostName 185.19.218.119
+    User kai
+    IdentityFile ~/.ssh/kai_sp
+
+Host sportcontract-test-worker2
+    HostName 185.19.218.1
+    User kai
+    IdentityFile ~/.ssh/kai_sp
