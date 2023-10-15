@@ -6,6 +6,7 @@ mod cli;
 mod config;
 mod console;
 mod handler;
+mod validation;
 
 use crate::cli::{Cli, Command};
 use crate::handler::{

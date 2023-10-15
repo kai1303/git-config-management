@@ -2,30 +2,53 @@ use crate::config::Config;
 use crate::console::{print_configs, print_config};
 
 use std::collections::HashMap;
-use std::{format, panic};
+use std::panic;
 use std::{fs, path::Path};
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use std::process::Command;
+use cliclack::{intro, outro, input};
+
+
+const FILE_CONFIG_PATH : &str = ".ssh/config";
 
 pub fn add_command_handler() {
     let home_dir = match dirs::home_dir() {
         Some(path) => path.as_path().display().to_string(),
         None => String::from("")
     };
-    let config_file_path = Path::new(&home_dir).join(".ssh/config");
-
-    let content = match fs::read_to_string(config_file_path) {
-        Ok(content) => content,
-        Err(err) => panic!("open file fails {:?}", err)
+    let mut config = Config{
+        host: String::new(),
+        host_name: String::new(),
+        user: String::new(),
+        identity_file: String::new(),
     };
-    let configs = parse_file_config(&content);
-    let string_content = config_to_string(configs[0].clone());
+    let config_file_path = Path::new(&home_dir).join(FILE_CONFIG_PATH);
+    let _ = intro("Add config file");
+    match input("Input your config host").placeholder("github.com").interact() {
+        Ok(input)  => config.host = input,
+        Err(err) => panic!("{:?}", err)
+    };
+    match input("Input your config host name").interact() {
+        Ok(input) => config.host_name = input,
+        Err(err) => panic!("{:?}", err)
+    };
+    match input("Input your config user").interact() {
+        Ok(input) => config.user = input,
+        Err(err) => panic!("{:?}", err)
+    };
+    match input("Input your identity file").placeholder("~/.ssh/config/id_rsa").interact() {
+        Ok(input) => config.identity_file = input,
+        Err(err) => panic!("{:?}", err)
+    };
+    print_config(config.clone());
     let mut file = OpenOptions::new()
         .write(true)
-        .append(true).open("./foo.txt").expect("Failed to open the file");
-    match write!(file, "{}", string_content) {
-        Ok(_) => println!("insert config success"),
+        .append(true).open(&config_file_path).expect("Failed to open the file");
+    match write!(file, "{}", config) {
+        Ok(_) => {
+            let _ = outro("New config added");
+        },
         Err(err) => println!("{:?}", err)
     }
 }
@@ -35,7 +58,7 @@ pub fn get_command_handler(host: String) {
         Some(path) => path.as_path().display().to_string(),
         None => String::from("")
     };
-    let config_file_path = Path::new(&home_dir).join(".ssh/config");
+    let config_file_path = Path::new(&home_dir).join(FILE_CONFIG_PATH);
     let content = match fs::read_to_string(config_file_path) {
         Ok(content) => content,
         Err(err) => panic!("open file fails {:?}", err)
@@ -60,7 +83,7 @@ pub fn list_command_handler() {
         Some(path) => path.as_path().display().to_string(),
         None => String::from("")
     };
-    let config_file_path = Path::new(&home_dir).join(".ssh/config");
+    let config_file_path = Path::new(&home_dir).join(FILE_CONFIG_PATH);
     let content = match fs::read_to_string(config_file_path) {
         Ok(content) => content,
         Err(err) => panic!("open file fails {:?}", err)
@@ -120,13 +143,5 @@ fn vec_to_map(configs: Vec<Config>) -> HashMap<String, Config> {
         h.insert(c.host.clone(), c.clone());
     }
     h
-}
-
-fn config_to_string(config: Config) -> String {
-    format!(r#"
-Host {host}
-    HostName {host_name}
-    USer {user}
-    IdentityFile {identity_file}"#, host = config.host, host_name = config.host_name, user = config.user, identity_file = config.identity_file)
 }
 
