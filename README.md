@@ -1,3 +1,3 @@
-get config
-list config
-add config
+# GIT CONFIGS MANAGER
+# DESCRIPTION
+# HOW TO INSTALL/RUN

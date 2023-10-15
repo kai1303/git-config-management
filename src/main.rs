@@ -14,7 +14,8 @@ use crate::handler::{
 };
 use clap::Parser;
 
-fn main() {
+#[tokio::main]
+async fn main() {
     let args = Cli::parse();
     match &args.command {
         Command::Add => add_command_handler(),
@@ -37,8 +38,8 @@ fn main() {
                 Some(s) => s,
                 None => String::from(""),
             };
-            test_command_handler(k)
+            test_command_handler(k).await;
         }
-        Command::Cur => cur_command_handler()
+        Command::Cur => cur_command_handler().await
     }
 }
