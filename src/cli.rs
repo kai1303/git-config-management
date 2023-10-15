@@ -16,6 +16,7 @@ pub enum Command {
     List,
     Add,
     Test,
+    Cur
 }
 
 #[derive(clap::ValueEnum, Clone, Debug)]

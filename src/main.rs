@@ -10,7 +10,7 @@ mod validation;
 
 use crate::cli::{Cli, Command};
 use crate::handler::{
-    add_command_handler, get_command_handler, list_command_handler, test_command_handler,
+    add_command_handler, get_command_handler, list_command_handler, test_command_handler, cur_command_handler
 };
 use clap::Parser;
 
@@ -39,5 +39,6 @@ fn main() {
             };
             test_command_handler(k)
         }
+        Command::Cur => cur_command_handler()
     }
 }

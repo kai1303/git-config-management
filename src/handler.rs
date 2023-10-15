@@ -37,7 +37,7 @@ pub fn add_command_handler() {
         Ok(input) => config.user = input,
         Err(err) => panic!("{:?}", err)
     };
-    match input("Input your identity file").placeholder("~/.ssh/config/id_rsa").interact() {
+    match input("Input your identity file").placeholder("~/.ssh/id_rsa").interact() {
         Ok(input) => config.identity_file = input,
         Err(err) => panic!("{:?}", err)
     };
@@ -135,6 +135,30 @@ fn parse_file_config(content: &str)-> Vec<Config>{
     }
     configs.push(config.clone());
     return configs;
+}
+
+pub fn cur_command_handler() {
+    let mut git_command = Command::new("git");
+    let command_output = match git_command.arg("remote").arg("-v").output() {
+        Ok(output) => output,
+        Err(err) => panic!("{:?}", err)
+    };
+    let command_string_output = match String::from_utf8(command_output.stdout) {
+        Ok(i) => i,
+        Err(_) => panic!("parse resulve of git remote -v command failed")
+    };
+    let lines = command_string_output.lines().filter(|&line| line.ends_with("(fetch)"));
+    for l in lines {
+        let mut splited = l.split_whitespace();
+        let remote = match splited.nth(0) { 
+            Some(str) => str.to_string(),
+            None => String::new()
+        };
+        let remote_url = match splited.nth(1) { 
+            Some(str) => str.to_string(),
+            None => String::new()
+        };
+    }
 }
 
 fn vec_to_map(configs: Vec<Config>) -> HashMap<String, Config> {
